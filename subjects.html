@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subjects</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            position: relative; /* Needed for positioning the "Add Test" button */
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #subjectsList {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .test-item {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .test-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .test-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .test-item p {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .test-item button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .test-item button:hover {
+            background-color: #0056b3;
+        }
+
+        .test-item button:active {
+            background-color: #00408d;
+        }
+
+        .test-item button:last-child {
+            background-color: #dc3545;
+        }
+
+        .test-item button:last-child:hover {
+            background-color: #c82333;
+        }
+
+        /* Add Test Button - Positioned to the top-right */
+        .add-test-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .add-test-button:hover {
+            background-color: #218838;
+        }
+
+        .add-test-button:active {
+            background-color: #1e7e34;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .test-item {
+                padding: 15px;
+            }
+
+            .test-item button {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .add-test-button {
+                padding: 8px 16px;
+                font-size: 12px;
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <button class="add-test-button" onclick="window.location.href='enterques.html'">Add Test</button>
+        <h2>Test Subjects</h2>
+        <div id="subjectsList">
+            <!-- Subjects will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // Get saved tests from localStorage
+            let allTests = JSON.parse(localStorage.getItem("allTests")) || [];
+
+            const subjectsList = document.getElementById("subjectsList");
+            subjectsList.innerHTML = ""; // Clear existing list if any
+
+            allTests.forEach((test, index) => {
+                const testDiv = document.createElement("div");
+                testDiv.classList.add("test-item");
+                testDiv.innerHTML = `
+                    <h3>${test.testName}</h3>
+                    <p>Number of Questions: ${test.numQuestions}</p>
+                    <p>Marks per Question: ${test.marksPerQuestion}</p>
+                    <p>Time Limit: ${test.timeLimit} minutes</p>
+                    <button onclick="editTest(${index})">Edit</button>
+                    <button onclick="deleteTest(${index})">Delete</button>
+                `;
+                subjectsList.appendChild(testDiv);
+            });
+        };
+
+        function editTest(index) {
+            // Get the test data from localStorage
+            let allTests = JSON.parse(localStorage.getItem("allTests")) || [];
+            const test = allTests[index];
+
+            // Set the form data to the test data (you can modify this based on your form structure)
+            localStorage.setItem("editTest", JSON.stringify(test));
+            window.location.href = "enterques.html";
+        }
+
+        function deleteTest(index) {
+            // Get the tests from localStorage
+            let allTests = JSON.parse(localStorage.getItem("allTests")) || [];
+
+            // Remove the test from the array
+            allTests.splice(index, 1);
+
+            // Save the updated array back to localStorage
+            localStorage.setItem("allTests", JSON.stringify(allTests));
+
+            // Reload the page to reflect changes
+            window.location.reload();
+        }
+    </script>
+
+</body>
+</html>

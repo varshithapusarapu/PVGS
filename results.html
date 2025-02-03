@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            border-bottom: 0.3px solid #ccc;
+        }
+
+        .navbar .logo img {
+            height: 60px;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar ul li {
+            margin: 0 15px;
+        }
+
+        .navbar ul li a {
+            color: #601637;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        .navbar ul li a:hover {
+            color: #ff9800;
+        }
+
+        .results-section {
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .results-table th, .results-table td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .results-table th {
+            background-color: #f1f1f1;
+        }
+
+        footer {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            margin-top: 20px;
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        footer a {
+            color: #601637;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #ff9800;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="logo"><img src="pics/a1.png" alt="Logo"></a>
+        <ul>
+            <li><a href="index.html">About</a></li>
+            <li><a href="signin.html">Sign In</a></li>
+            <li><a href="admin.html">Admin</a></li>
+            <li><a href="courses.html">Courses</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="results-section">
+        <h2 style="text-align: center; font-size: 45px; color: rgb(122, 49, 61);"><i>Test Results</i></h2>
+
+        <table class="results-table" id="resultsTable">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Results will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <p>Contact us: <a href="mailto:pvgs@example.com">pvgs@example.com</a> | Phone: +123 456 7890</p>
+        <p>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Help Center</a>
+        </p>
+        <p>&copy; 2025 Online Examination System. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.17.2/firebase-firestore.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDaulX-tEg4K96mLrWY5IDI_b2eQeHUAM4",
+            authDomain: "fir-361a2.firebaseapp.com",
+            projectId: "fir-361a2",
+            storageBucket: "fir-361a2.firebasestorage.app",
+            messagingSenderId: "958231791587",
+            appId: "1:958231791587:web:b510763933fba07e6182d6"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Fetch and display test results
+        const resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+
+        async function loadResults() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "testResults"));
+                const results = [];
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    results.push({
+                        username: data.username,
+                        score: data.score,
+                    });
+                });
+
+                // Sort results by score in descending order
+                results.sort((a, b) => b.score - a.score);
+
+                // Populate the table with results
+                results.forEach((result, index) => {
+                    const row = resultsTable.insertRow();
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${result.username}</td>
+                        <td>${result.score}</td>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error fetching results: ", error);
+            }
+        }
+
+        // Load results when the page loads
+        window.onload = loadResults;
+    </script>
+
+</body>
+</html>

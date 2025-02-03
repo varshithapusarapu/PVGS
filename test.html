@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .question-block {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .form-group input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+
+        footer {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            margin-top: 20px;
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        footer a {
+            color: #601637;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #ff9800;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Mock Test</h2>
+        <form id="mockTestForm">
+            <div id="questionsSection"></div>
+            <button type="button" class="submit-btn" id="submitTestBtn">Submit Test</button>
+        </form>
+    </div>
+
+    <footer>
+        <p>Contact us: <a href="mailto:pvgs@example.com">pvgs@example.com</a> | Phone: +123 456 7890</p>
+        <p>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Help Center</a>
+        </p>
+        <p>&copy; 2025 Online Examination System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        window.onload = function() {
+            const allTests = JSON.parse(localStorage.getItem("allTests")) || [];
+            const currentTestIndex=localStorage.getItem("currentTestIndex");
+
+            if (currentTestIndex === null || !allTests[currentTestIndex]) {
+                alert("No tests available.");
+                return;
+            }
+
+            const test = allTests[currentTestIndex];  // Assuming we're displaying the first test in the list
+            const questionsSection = document.getElementById("questionsSection");
+
+            test.questions.forEach((question, index) => {
+                const questionBlock = document.createElement("div");
+                questionBlock.classList.add("question-block");
+
+                questionBlock.innerHTML = `
+                    <div class="form-group">
+                        <label for="question${index}">${index + 1}. ${question.question}</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="radio" id="optionA${index}" name="question${index}" value="A">
+                        <label for="optionA${index}">${question.options.A}</label><br>
+                        <input type="radio" id="optionB${index}" name="question${index}" value="B">
+                        <label for="optionB${index}">${question.options.B}</label><br>
+                        <input type="radio" id="optionC${index}" name="question${index}" value="C">
+                        <label for="optionC${index}">${question.options.C}</label><br>
+                        <input type="radio" id="optionD${index}" name="question${index}" value="D">
+                        <label for="optionD${index}">${question.options.D}</label>
+                    </div>
+                `;
+
+                questionsSection.appendChild(questionBlock);
+            });
+
+            document.getElementById("submitTestBtn").addEventListener("click", function () {
+                let score = 0;
+                test.questions.forEach((question, index) => {
+                    const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+                    if (selectedOption && selectedOption.value === question.correctOption) {
+                        score++;
+                    }
+                });
+
+                alert(`You scored ${score} out of ${test.numQuestions}`);
+            });
+        };
+    </script>
+
+</body>
+</html>

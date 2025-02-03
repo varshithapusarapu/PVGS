@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENTERQUES</title>
+    <style>
+         <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            background-color: #fafafa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #007bff;
+            outline: none;
+            background-color: #fff;
+        }
+
+        .question-block {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-block .form-group label {
+            font-size: 14px;
+        }
+
+        .form-group input[type="text"] {
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+
+        .form-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .form-group input[type="number"]::-webkit-outer-spin-button,
+        .form-group input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .submit-btn {
+                font-size: 14px;
+            }
+        }
+    </style>
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Create Test</h2>
+        
+        <form id="testForm">
+            <!-- Test Information -->
+            <div class="form-group">
+                <label for="testName">Test Name:</label>
+                <input type="text" id="testName" name="testName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="numQuestions">Number of Questions:</label>
+                <input type="number" id="numQuestions" name="numQuestions" required min="1">
+            </div>
+
+            <div class="form-group">
+                <label for="marksPerQuestion">Marks per Question:</label>
+                <input type="number" id="marksPerQuestion" name="marksPerQuestion" required min="1">
+            </div>
+
+            <div class="form-group">
+                <label for="timeLimit">Time Limit (in minutes):</label>
+                <input type="number" id="timeLimit" name="timeLimit" required min="1">
+            </div>
+
+            <!-- Questions Section -->
+            <div id="questionsSection" class="questions-container">
+                <!-- Questions will be added dynamically here -->
+            </div>
+
+            <button type="button" class="submit-btn" id="submitTestBtn">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("numQuestions").addEventListener("input", function () {
+            const numQuestions = parseInt(this.value);
+            const questionsSection = document.getElementById("questionsSection");
+
+            // Clear previous questions if any
+            questionsSection.innerHTML = "";
+
+            // Generate input fields for questions
+            for (let i = 1; i <= numQuestions; i++) {
+                const questionBlock = document.createElement("div");
+                questionBlock.classList.add("question-block");
+
+                questionBlock.innerHTML = `
+                    <div class="form-group">
+                        <label for="question${i}">Question ${i}:</label>
+                        <input type="text" id="question${i}" name="question${i}" placeholder="Enter the question" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Options for Question ${i}:</label>
+                        <input type="text" id="optionA${i}" name="optionA${i}" placeholder="Option A" required>
+                        <input type="text" id="optionB${i}" name="optionB${i}" placeholder="Option B" required>
+                        <input type="text" id="optionC${i}" name="optionC${i}" placeholder="Option C" required>
+                        <input type="text" id="optionD${i}" name="optionD${i}" placeholder="Option D" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="correctOption${i}">Correct Option:</label>
+                        <select id="correctOption${i}" name="correctOption${i}" required>
+                            <option value="A">Option A</option>
+                            <option value="B">Option B</option>
+                            <option value="C">Option C</option>
+                            <option value="D">Option D</option>
+                        </select>
+                    </div>
+                `;
+
+                questionsSection.appendChild(questionBlock);
+            }
+        });
+
+        document.getElementById("submitTestBtn").addEventListener("click", function () {
+            const formData = new FormData(document.getElementById("testForm"));
+            let testData = {
+                testName: formData.get('testName'),
+                numQuestions: formData.get('numQuestions'),
+                marksPerQuestion: formData.get('marksPerQuestion'),
+                timeLimit: formData.get('timeLimit'),
+                questions: []
+            };
+
+            for (let i = 1; i <= testData.numQuestions; i++) {
+                testData.questions.push({
+                    question: formData.get('question' + i),
+                    options: {
+                        A: formData.get('optionA' + i),
+                        B: formData.get('optionB' + i),
+                        C: formData.get('optionC' + i),
+                        D: formData.get('optionD' + i)
+                    },
+                    correctOption: formData.get('correctOption' + i)
+                });
+            }
+
+            // Save test data to localStorage
+            let allTests = JSON.parse(localStorage.getItem("allTests")) || [];
+            allTests.push(testData);
+            localStorage.setItem("allTests", JSON.stringify(allTests));
+
+            // Redirect to subjects page
+            window.location.href = "subjects.html";
+        });
+        window.onload = function() {
+    const editTest = JSON.parse(localStorage.getItem("editTest"));
+
+    if (editTest) {
+        // Fill in the form with the data from the test
+        document.getElementById("testName").value = editTest.testName;
+        document.getElementById("numQuestions").value = editTest.numQuestions;
+        document.getElementById("marksPerQuestion").value = editTest.marksPerQuestion;
+        document.getElementById("timeLimit").value = editTest.timeLimit;
+
+        // Pre-populate questions dynamically
+        const questionsSection = document.getElementById("questionsSection");
+        questionsSection.innerHTML = ""; // Clear existing questions
+
+        editTest.questions.forEach((question, i) => {
+            const questionBlock = document.createElement("div");
+            questionBlock.classList.add("question-block");
+
+            questionBlock.innerHTML = `
+                <div class="form-group">
+                    <label for="question${i + 1}">Question ${i + 1}:</label>
+                    <input type="text" id="question${i + 1}" name="question${i + 1}" value="${question.question}" required>
+                </div>
+                <div class="form-group">
+                    <label>Options for Question ${i + 1}:</label>
+                    <input type="text" id="optionA${i + 1}" name="optionA${i + 1}" value="${question.options.A}" required>
+                    <input type="text" id="optionB${i + 1}" name="optionB${i + 1}" value="${question.options.B}" required>
+                    <input type="text" id="optionC${i + 1}" name="optionC${i + 1}" value="${question.options.C}" required>
+                    <input type="text" id="optionD${i + 1}" name="optionD${i + 1}" value="${question.options.D}" required>
+                </div>
+                <div class="form-group">
+                    <label for="correctOption${i + 1}">Correct Option:</label>
+                    <select id="correctOption${i + 1}" name="correctOption${i + 1}" required>
+                        <option value="A" ${question.correctOption === "A" ? "selected" : ""}>Option A</option>
+                        <option value="B" ${question.correctOption === "B" ? "selected" : ""}>Option B</option>
+                        <option value="C" ${question.correctOption === "C" ? "selected" : ""}>Option C</option>
+                        <option value="D" ${question.correctOption === "D" ? "selected" : ""}>Option D</option>
+                    </select>
+                </div>
+            `;
+            questionsSection.appendChild(questionBlock);
+        });
+
+        // Remove the editTest item after use
+        localStorage.removeItem("editTest");
+    }
+};
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EXAMS</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            padding: 10px 20px;
+            border-bottom: 0.3px solid #ccc;
+        }
+
+        .navbar .logo img {
+            height: 60px;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar ul li {
+            margin: 0 15px;
+        }
+
+        .navbar ul li a {
+            color: #601637;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        .navbar ul li a:hover {
+            color: #ff9800;
+        }
+
+        .course-section {
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .course {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .course-name {
+            font-size: 18px;
+        }
+
+        .course-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .course-actions button {
+            padding: 8px 15px;
+            border: none;
+            background-color: #215c2b;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .course-actions button:hover {
+            background-color: rgb(124, 163, 67);
+        }
+
+        footer {
+            background-color: #f1f1f1;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #ccc;
+            margin-top: 20px;
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        footer a {
+            color: #601637;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #ff9800;
+        }
+
+        .course-list {
+            margin-top: 40px;
+        }
+
+        .course-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-item button {
+            background-color: #448667;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .course-item button:hover {
+            background-color: #74d3a5;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="logo"><img src="pics/a1.png" alt="Logo"></a>
+        <ul>
+            <li><a href="index.html">About</a></li>
+            <li><a href="signin.html">Sign In</a></li>
+            <li><a href="admin.html">Admin</a></li>
+            <li><a href="courses.html">Courses</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="course-section">
+        <h2 style="text-align: center; font-size: 45px; color: rgb(122, 49, 61);"><i>Available Subjects</i></h2>
+        <div id="subjectsList" class="course-list">
+            <!-- Dynamically populated list of subjects -->
+        </div>
+    </div>
+
+    <footer>
+        <p>Contact us: <a href="mailto:pvgs@example.com">pvgs@example.com</a> | Phone: +123 456 7890</p>
+        <p>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Help Center</a>
+        </p>
+        <p>&copy; 2025 Online Examination System. All rights reserved.</p>
+    </footer>
+
+    <script>
+        window.onload = function() {
+            // Get saved tests from localStorage
+            let allTests = JSON.parse(localStorage.getItem("allTests")) || [];
+
+            const subjectsList = document.getElementById("subjectsList");
+            subjectsList.innerHTML = ""; // Clear existing list if any
+
+            allTests.forEach((test, index) => {
+                const testDiv = document.createElement("div");
+                testDiv.classList.add("course-item");
+                testDiv.innerHTML = `
+                    <div class="course-name">
+                        <h3>${test.testName}</h3>
+                        <p>Number of Questions: ${test.numQuestions}</p>
+                        <p>Time Limit: ${test.timeLimit} minutes</p>
+                    </div>
+                    <div class="course-actions">
+                        <button onclick="attemptTest(${index})">Attempt Test</button>
+                    </div>
+                `;
+                subjectsList.appendChild(testDiv);
+            });
+        };
+
+        function attemptTest(index) {
+            // Store the test index in localStorage and redirect to the test page
+            localStorage.setItem("currentTestIndex", index);
+            window.location.href = "test.html";
+        }
+    </script>
+
+</body>
+</html>
